@@ -1,0 +1,517 @@
+{
+  "$schema": "./schemas/oracyl_ui_contract.schema.json",
+  "product": "Oracyl",
+  "version": "1.0.0",
+  "document_status": "operator-design-baseline; architectural goal; prototype behavior disclosed separately",
+  "corpus_role": "A machine-readable statement of the intended end-user experience for Victor, not a claim of completed native implementation.",
+  "operator_goal": "Use one Oracyl Android application as a coherent, low-friction command center for Victor across phone portrait and desktop/Samsung DeX. Preserve the approved visual aesthetics and navigation while supplying real capability bindings later.",
+  "mode_targets": [
+    "phone_portrait",
+    "desktop_dex"
+  ],
+  "navigation": [
+    "Chats",
+    "Research",
+    "Tasks",
+    "Apps",
+    "Tabs",
+    "Projects",
+    "Skills",
+    "Accounts"
+  ],
+  "navigation_roles": {
+    "Chats": {
+      "goal": "Converse directly with Victor and resume saved threads without losing context.",
+      "entities": [
+        "conversation",
+        "message",
+        "attachment",
+        "thread_id"
+      ],
+      "children": [
+        "New chat",
+        "Recent conversations",
+        "Conversation search"
+      ],
+      "operations": [
+        "create",
+        "open",
+        "send",
+        "edit",
+        "copy",
+        "share",
+        "pin",
+        "archive_if_approved"
+      ],
+      "depends_on": [
+        "Victor dialogue API",
+        "conversation repository"
+      ]
+    },
+    "Research": {
+      "goal": "Run, inspect, continue, and retrieve Victor research work, with findings, sources, and status preserved.",
+      "entities": [
+        "research_ticket",
+        "research_note",
+        "source",
+        "finding",
+        "checkpoint"
+      ],
+      "children": [
+        "Active investigations",
+        "Research archive"
+      ],
+      "operations": [
+        "create",
+        "open",
+        "continue",
+        "search",
+        "pin",
+        "export"
+      ],
+      "depends_on": [
+        "research engine",
+        "research repository"
+      ]
+    },
+    "Tasks": {
+      "goal": "Create, monitor, review, and manage scheduled or bounded work.",
+      "entities": [
+        "task",
+        "task_run",
+        "schedule",
+        "run_status"
+      ],
+      "children": [
+        "Scheduled tasks",
+        "Completed tasks"
+      ],
+      "operations": [
+        "create",
+        "inspect",
+        "pause",
+        "resume",
+        "cancel_with_confirmation"
+      ],
+      "depends_on": [
+        "task scheduler and executor"
+      ]
+    },
+    "Apps": {
+      "goal": "Launch purposeful applications hosted within Oracyl without leaving the primary workspace.",
+      "entities": [
+        "app_manifest",
+        "app_instance",
+        "app_state"
+      ],
+      "children": [
+        "Installed apps",
+        "App workspace"
+      ],
+      "operations": [
+        "browse",
+        "launch",
+        "switch",
+        "close",
+        "pin"
+      ],
+      "depends_on": [
+        "hosted-app runtime",
+        "app registry"
+      ]
+    },
+    "Tabs": {
+      "goal": "Reopen browser pages or in-app content tabs; maintain a Chromium-like optional browsing workspace inside Oracyl.",
+      "entities": [
+        "tab",
+        "url",
+        "tab_session",
+        "saved_tab"
+      ],
+      "children": [
+        "Saved browser tabs",
+        "Open tabs"
+      ],
+      "operations": [
+        "open",
+        "switch",
+        "add",
+        "close_nonprimary",
+        "save_via_checkmark",
+        "unsave"
+      ],
+      "depends_on": [
+        "Android WebView/Chromium-compatible tab host",
+        "URL navigation and browser state"
+      ]
+    },
+    "Projects": {
+      "goal": "Organize work into persistent project workspaces with relevant conversations, files, research, and tasks.",
+      "entities": [
+        "project",
+        "project_resource",
+        "project_member"
+      ],
+      "children": [
+        "Recent projects",
+        "All projects"
+      ],
+      "operations": [
+        "create",
+        "open",
+        "attach_resources",
+        "search",
+        "pin"
+      ],
+      "depends_on": [
+        "project repository"
+      ]
+    },
+    "Skills": {
+      "goal": "Discover, review, and invoke Victor capabilities/skills without conflating them with hosted Apps.",
+      "entities": [
+        "skill_manifest",
+        "skill_permissions",
+        "skill_invocation"
+      ],
+      "children": [
+        "Available skills",
+        "Skill details"
+      ],
+      "operations": [
+        "browse",
+        "inspect",
+        "activate_if_authorized",
+        "invoke",
+        "pin"
+      ],
+      "depends_on": [
+        "skill registry",
+        "permission gate"
+      ]
+    },
+    "Accounts": {
+      "goal": "Connect, view, and manage identities/integrations and the permissions attached to them.",
+      "entities": [
+        "account",
+        "provider_connection",
+        "auth_state",
+        "permission_grant"
+      ],
+      "children": [
+        "Connected accounts",
+        "Connection settings"
+      ],
+      "operations": [
+        "view_status",
+        "connect_with_consent",
+        "disconnect_with_confirmation",
+        "review_scope"
+      ],
+      "depends_on": [
+        "secure credential store",
+        "provider authorization"
+      ]
+    }
+  },
+  "pinned": {
+    "purpose": "Quick-access shortcuts to any supported underlying resource type, independent of its category and not duplicating its data.",
+    "resource_types": [
+      "chat",
+      "task",
+      "research",
+      "project",
+      "browser_tab",
+      "app",
+      "skill"
+    ],
+    "expected_actions": [
+      "pin",
+      "open",
+      "reorder_if_supported",
+      "unpin"
+    ],
+    "display_policy": "mixed icon + item name; retain stable link to original resource"
+  },
+  "recent_chats": {
+    "purpose": "Resume latest conversations quickly; list should scroll and never force important actions off-screen.",
+    "resource_types": [
+      "chat"
+    ],
+    "ranking": "recency, not pin order",
+    "examples_are_fixture_only": [
+      "Finances Plan",
+      "Workout Plan",
+      "Travel Itinerary"
+    ]
+  },
+  "tabs": {
+    "primary_tab": "Oracyl",
+    "primary_closeable": false,
+    "secondary_closeable": true,
+    "secondary_has_checkmark": true,
+    "checkmark_semantics": "save tab in Tabs sidebar category; it is not a claim that the web URL was permanently bookmarked by browser engine",
+    "separate_pin_semantics": "Pinned shortcuts may reference a saved or open tab; no coupling mandated."
+  },
+  "views": {
+    "desktop_dex": {
+      "reference_path": "reference/Desktop_1920x1080.png",
+      "viewport_css_pixels": [
+        1920,
+        1080
+      ],
+      "viewport_purpose": "canonical desktop/DeX reference; adapt while preserving hierarchy",
+      "presentation": "full-height app surface, integrated top tab rail, persistent sidebar, conversation canvas and bottom composer",
+      "dimensions_css_px_at_reference": {
+        "tab_strip_height": 52,
+        "sidebar_width": 335,
+        "sidebar_brand_height": 81,
+        "sidebar_footer_height": 83,
+        "sidebar_nav_standard_row": 43,
+        "sidebar_pinned_height": 205,
+        "sidebar_list_row": 30,
+        "sidebar_pinned_title_height": 47
+      },
+      "regions": [
+        "top_tab_strip",
+        "left_sidebar",
+        "main_content_canvas",
+        "bottom_composer",
+        "independent_scroll_regions"
+      ],
+      "required": [
+        "primary Oracyl tab is leftmost and non-closable",
+        "secondary tabs have save/checkmark and X",
+        "main nav is in exact order",
+        "Pinned and Recent Chats displayed below nav",
+        "Library and Settings anchored in sidebar footer",
+        "no OS taskbar or full browser address bar built into app UI",
+        "composer anchored bottom",
+        "native DeX window resizing supported"
+      ],
+      "reference_notes": "Screenshot reference was browser-rendered at CSS 1920x1080; real Android DeX host window controls are controlled by the host."
+    },
+    "phone_portrait": {
+      "reference_paths": [
+        "reference/Portrait_Chat_360x780.png",
+        "reference/Portrait_Menu_360x780.png",
+        "reference/Portrait_Settings_360x780.png"
+      ],
+      "viewport_css_pixels": [
+        360,
+        780
+      ],
+      "reference_png_pixels": [
+        720,
+        1560
+      ],
+      "device_scale_factor": 2,
+      "presentation": "single-column chat with drawer overlay, compact toolbar, fixed bottom composer, settings page accessible via drawer",
+      "dimensions_css_px_at_reference": {
+        "mobile_toolbar_height": 69,
+        "drawer_width": "min(80vw,355px)",
+        "mobile_nav_row_height": 43,
+        "composer_height": 47,
+        "composer_side_gutter": 11,
+        "settings_corner_radius": 25
+      },
+      "regions": [
+        "android_system_status_area",
+        "mobile_top_toolbar",
+        "chat_scroll",
+        "bottom_composer",
+        "drawer_overlay",
+        "settings_page",
+        "android_system_navigation_area"
+      ],
+      "required": [
+        "real Android OS owns status/navigation bars; no fake duplicate bars in a native host",
+        "hamburger opens drawer, scrim and back close",
+        "new-chat action present at top and drawer",
+        "navigation shows same eight categories, each expandable",
+        "Pinned and Recent Chats available in drawer",
+        "Library and Settings in drawer footer",
+        "settings as grouped touch-sized cards",
+        "chat input reachable with Android keyboard and safe-area insets",
+        "no desktop tab rail forced into portrait",
+        "adaptive when orientation changes"
+      ],
+      "reference_notes": "Portrait screenshot is 720x1560 physical PNG pixels generated from 360x780 CSS pixel viewport at scale factor 2. Screenshot references are web preview captures, not Android hardware certification."
+    }
+  },
+  "settings": {
+    "role": "accessible app settings, grouped into dark rounded cards in phone mode; desktop entry appears in footer",
+    "groups": [
+      [
+        "Account",
+        "Workspace",
+        "Connections"
+      ],
+      [
+        "Personalization",
+        "Memory",
+        "Skills",
+        "Accent color"
+      ],
+      [
+        "General",
+        "Usage and limits",
+        "Notifications"
+      ],
+      [
+        "Privacy and permissions",
+        "About Oracyl"
+      ]
+    ],
+    "current_data": "placeholders in prototype",
+    "do_not_copy_reference_identity_data": true
+  },
+  "design": {
+    "theme": "dark-only canonical reference unless Operator authorizes change",
+    "logo": {
+      "asset": "prototype/Oracyl_Semicolon_YinYang.svg",
+      "identity": "purple/near-black yin-yang; upper dot circular, lower comma with distinct curved tail",
+      "must_not": "generic yin-yang with two round dots; textual punctuation glyph; unrelated mark"
+    },
+    "desktop_tokens": {
+      "base_background": "#050607",
+      "text": "#f5f5f6",
+      "accent_purple": "#b44de9",
+      "accent_pink": "#ee3cbc",
+      "active_sidebar": "#1c222b",
+      "line": "#21262e"
+    },
+    "mobile_tokens": {
+      "background": "#000000",
+      "drawer": "#212121",
+      "settings_card": "#303030",
+      "user_bubble": "#50002e",
+      "voice_pink": "#ee66a3",
+      "brand_purple": "#b24ce9",
+      "text": "#f5f5f5"
+    },
+    "canonical_source": "prototype/Oracyl_Responsive_Desktop_Portrait.html",
+    "no_artistic_freedom": "Visual changes require Operator approval. When reference image and source differ, flag the conflict instead of silently choosing a redesign.",
+    "note": "Numbers are source-derived CSS reference values and viewport-specific; do not present them as exact physical device pixels."
+  },
+  "capabilities": {
+    "prototype_already_demonstrated": [
+      "desktop chat composition shell",
+      "desktop tab strip and checkmark UI state",
+      "desktop expandable sidebar and context pin/unpin demo",
+      "phone chat layout",
+      "phone drawer open/close and expandable menu",
+      "phone grouped settings page",
+      "phone local chat send",
+      "phone local pin labels",
+      "copy UI where browser permits",
+      "same canonical SVG logo at prescribed locations",
+      "responsive screen switch"
+    ],
+    "prototype_only_not_done": [
+      "Android APK packaging",
+      "native Android navigation / lifecycle",
+      "actual Victor model/chat integration",
+      "persistent thread/research/task/project storage",
+      "real Chromium tab engine and page navigation",
+      "hosted Apps runtime",
+      "installed Skills execution registry",
+      "secure account credential workflow",
+      "permissions/consent implementations",
+      "real scheduler",
+      "microphone recording and speech-to-text",
+      "persistent cross-mode data state",
+      "offline synchronization/retry design",
+      "notification delivery"
+    ],
+    "do_not_misrepresent": "A decorative/clickable control or local preview does not satisfy the underlying feature until connected, exercised, and accepted."
+  },
+  "principles": {
+    "implementation_choices": "Victor may implement via Android WebView, native Compose, or hybrid provided the user-facing output and behavior satisfy the same contracts. UI aesthetics are fixed; implementation mechanisms may vary without changing user-observable results.",
+    "android_deployment": "One Android application; same logical Oracyl workspace and data across handheld phone and Samsung DeX/windowed use. Responsive state not two unrelated products.",
+    "primary_navigation": "Top-level category order immutable unless Operator explicitly approves change.",
+    "principal_app_tab": "Oracyl is always first, cannot be closed; it is the app surface, not merely a website in a desktop browser.",
+    "web_host": "Chromium-compatible browser capability is optional in-app; other browser tabs can be closed. Save/checkmark adds the tab to Tabs; separate Pinned shortcuts are optional and can reference browser tabs.",
+    "skills_vs_apps": "Apps are interactive in-app workspaces. Skills are reusable capabilities or procedures exposed to Victor. A Skill is not automatically an App.",
+    "data_model": "IDs and shared repository pointers underlie entries in sidebar, Pinned, Tabs, Recents; list placements reference one underlying item rather than duplicate data.",
+    "cross_mode": "Switching orientation or DeX must preserve the active workspace, text draft where feasible, selected tab, scroll context, pin state, and settings, with platform lifecycle recovery.",
+    "authority": "User controls aesthetic canon, integrations, external actions, and permissions. Design pack grants no autonomy or credentials; no kernel surgery follows from these UI instructions.",
+    "security": "Render untrusted browser content in isolated web surface; no arbitrary JS bridge to privileged Victor actions. Handle attachments through permissions-scoped picker. Protect account credentials with platform security. Require permission before microphone or any external operation.",
+    "accessibility": "Maintain screen reader labels, keyboard focus, touch targets, contrast and reduced-motion path; preserve visual geometry where feasible without sacrificing operating-system accessibility settings.",
+    "failure_semantics": "Clearly indicate disconnected/offline/not implemented states; do not fabricate saved state or successful external actions."
+  },
+  "integration_api_contracts": {
+    "conversations": [
+      "list_conversations",
+      "get_conversation",
+      "send_message",
+      "create_conversation",
+      "rename_or_pin_conversation"
+    ],
+    "research": [
+      "list_research",
+      "get_research",
+      "create_or_continue_research",
+      "retrieve_research_artifacts"
+    ],
+    "tasks": [
+      "list_tasks",
+      "get_task",
+      "create_task_with_approval",
+      "pause_or_resume_task",
+      "inspect_run_receipt"
+    ],
+    "apps": [
+      "list_installed_apps",
+      "open_app_instance",
+      "close_app_instance"
+    ],
+    "tabs": [
+      "open_url_in_sandbox",
+      "create_tab",
+      "close_tab",
+      "save_tab",
+      "list_tabs",
+      "restore_tabs"
+    ],
+    "projects": [
+      "list_projects",
+      "open_project",
+      "attach_project_resource"
+    ],
+    "skills": [
+      "list_skills",
+      "view_skill_contract",
+      "invoke_skill_if_authorized"
+    ],
+    "accounts": [
+      "list_connection_status",
+      "request_connect_permission",
+      "disconnect_connection"
+    ],
+    "library": [
+      "list_items",
+      "open_item",
+      "save_artifact_if_authorized"
+    ],
+    "settings": [
+      "read_settings",
+      "update_setting_with_scope_check"
+    ],
+    "global_ui": [
+      "resolve_resource",
+      "search_within_scope",
+      "copy",
+      "share_via_platform",
+      "state_restoration"
+    ]
+  },
+  "non_goals": [
+    "No new AI model training is implied by the UI corpus",
+    "No disclosure of Operator identity or credentials",
+    "No unapproved autonomous external interactions",
+    "No graphical charts are required by this UI reference",
+    "No Android OS chrome duplication",
+    "No claim that an HTML prototype is itself a shipped Android APK"
+  ]
+}

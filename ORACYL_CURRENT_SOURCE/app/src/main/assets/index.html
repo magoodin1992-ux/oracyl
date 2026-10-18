@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050607" />
+  <title>Oracyl — Desktop + Portrait UI</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik9yYWN5bCBzZW1pY29sb24geWluLXlhbmc6IHJvdW5kIGRvdCBhYm92ZSwgY29tbWEgYmVsb3ciPgo8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0OSIgZmlsbD0iI2IyNGNlOSIgLz4KPHBhdGggdHJhbnNmb3JtPSJyb3RhdGUoMTgwIDUwIDUwKSIgZD0iTTUwIDEgQTQ5IDQ5IDAgMCAxIDUwIDk5IEEyNC41IDI0LjUgMCAwIDEgNTAgNTAgQTI0LjUgMjQuNSAwIDAgMCA1MCAxWiIgZmlsbD0iIzA4MDkwZCIgLz4KPGNpcmNsZSBjeD0iNTAiIGN5PSIyNS41IiByPSI3LjUiIGZpbGw9IiNiMjRjZTkiIC8+CjxwYXRoIGQ9Ik01MCA2Ni4wIEM0My4xIDY2IDM5LjggNzEuMiA0MC4yIDc2LjIgQzQwLjUgODAuMiA0My42IDgyLjQgNDcuNiA4Mi42IEM0Ny4wIDg2LjcgNDQuNyA4OS44IDQxLjcgOTIuMyBDNTMuNyA4OS45IDU5LjMgODMuMiA1OS4zIDc2LjggQzU5LjMgNzAuNCA1NS4yIDY2LjAgNTAgNjYuMFoiIGZpbGw9IiMwODA5MGQiIC8+Cjwvc3ZnPgo=" />
+  <style>
+    :root {
+      --black:#050607;
+      --panel:#050607;
+      --txt:#f5f5f6;
+      --muted:#aab1c0;
+      --muted-icon:#bac3d2;
+      --line:#21262e;
+      --active:#1c222b;
+      --violet:#b44de9;
+      --pink:#ee3cbc;
+      --sidebar:335px;
+      --tabbar:52px;
+      --font:Inter, 'Segoe UI',Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--black);font-family:var(--font);color:var(--txt);-webkit-font-smoothing:antialiased}
+    button,input,textarea{font:inherit}
+    button{border:0;color:inherit;background:none;cursor:pointer}
+    button:focus-visible,[tabindex]:focus-visible,textarea:focus-visible{outline:2px solid #b15be7;outline-offset:2px}
+    .ico{display:inline-block;width:24px;height:24px;flex:none;vertical-align:middle;stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .ico.sm{width:20px;height:20px}.ico.xs{width:17px;height:17px}.ico.lg{width:28px;height:28px}
+    #app{width:100%;height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:#050607}
+    .tabs-strip{height:var(--tabbar);min-height:var(--tabbar);display:flex;align-items:stretch;background:linear-gradient(180deg,#0c0f14,#07090d 76%,#060708);border-bottom:1px solid #303741;box-shadow:0 1px 3px #0008;user-select:none}
+    .tab-list{display:flex;align-items:stretch;gap:0;flex:1;min-width:0;overflow:hidden}
+    .app-tab{position:relative;height:49px;display:flex;align-items:center;min-width:0;color:#e8e9ee;white-space:nowrap;font-size:16px}
+    .app-tab.oracyl{width:288px;min-width:190px;padding-left:21px;gap:11px;flex:none}
+    .app-tab.oracyl .oracyl-surface{position:absolute;left:51px;right:0;top:5px;bottom:1px;background:linear-gradient(180deg,#1b2028 0%,#131820 100%);border:1px solid #30353c;border-bottom:0;border-radius:12px 12px 0 0;z-index:0}
+    .app-tab.oracyl .halo{z-index:1}.app-tab.oracyl .tab-label{z-index:1}
+    .halo{width:28px;height:28px;display:inline-block;flex:none;overflow:visible;filter:drop-shadow(0 0 1px #b24ce955)}
+    .brand .halo{width:39px;height:39px}
+    .app-tab.browser{width:252px;min-width:166px;padding:0 11px 0 18px;gap:12px;border-right:1px solid #262a32}
+    .app-tab.browser.selected{background:linear-gradient(180deg,#141820,#0d1117)}
+    .app-tab.browser .tab-label{flex:1;overflow:hidden;text-overflow:ellipsis;font-size:15px;letter-spacing:-.4px}
+    .app-tab.browser .tab-close,.app-tab.browser .tab-keep{padding:0;color:#e5e8ef;width:23px;height:28px;display:grid;place-items:center}
+    .app-tab.browser .tab-keep.saved{color:#df62cb}
+    .add-tab{width:62px;min-width:62px;display:grid;place-items:center;color:#d9dee8;align-self:center;height:48px}
+    .window-actions{height:100%;display:flex;align-items:stretch;margin-left:auto}
+    .window-actions button{width:56px;color:#e8ebf1;display:grid;place-items:center}
+    .window-actions button:hover{background:#232830}
+    .window-actions button.quit:hover{background:#ab2034}
+    .workarea{height:calc(100% - var(--tabbar));display:flex;min-height:0}
+    .sidebar{width:var(--sidebar);flex:none;display:flex;flex-direction:column;min-height:0;overflow:hidden;border-right:1px solid #2a3039;background:radial-gradient(ellipse 120% 75% at 55% 52%,#010203,#050607 72%)}
+    .brand{height:81px;min-height:81px;display:flex;align-items:center;padding:0 25px 0 26px;gap:15px;user-select:none}
+    .brand-name{font-size:23px;font-weight:600;letter-spacing:-.6px;line-height:1}
+    .brand .brand-dropdown{padding:0 0 0 0;color:#e0e5eb;display:flex;align-items:center;margin-left:-5px}
+    .brand-spacer{flex:1}
+    .brand-icon{display:grid;place-items:center;width:28px;height:30px;color:#bec9d9;padding:0}
+    .nav{flex:none;padding:0 14px 10px;border-bottom:1px solid var(--line)}
+    .nav-btn{display:flex;align-items:center;width:100%;height:43px;padding:0 14px;color:#eceef2;border-radius:11px;text-align:left;gap:21px;font-size:16.5px;letter-spacing:-.2px;font-weight:450;white-space:nowrap}
+    .nav-btn.first{height:48px;margin-bottom:4px}
+    .nav-btn.selected{background:linear-gradient(90deg,#1a2029 0%,#191e27 65%,#171c25 100%);box-shadow:inset 0 1px #303640}
+    .nav-btn:hover:not(.selected){background:#12171d}
+    .nav-btn .menu-icon{width:30px;height:27px;display:grid;place-items:center;color:#ecf0f5}
+    .nav-btn span.nav-name{flex:1}
+    .nav-btn .chevron{color:#ebedf2;width:22px;height:22px;transition:transform .14s ease}
+    .nav-btn[aria-expanded="true"] .chevron{transform:rotate(180deg)}
+    .nav-btn.first[aria-expanded="true"] .chevron{transform:none}
+    .nav-children{background:#0c1014;margin:0 5px 4px 47px;border-left:1px solid #303843;padding:5px 0 5px 12px;display:none;max-height:112px;overflow:auto}
+    .nav-children.open{display:block}
+    .nav-children button{display:block;font-size:13px;text-align:left;color:#c5cbd7;padding:7px 4px;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav-children button:hover{color:white}
+    .list-section{display:flex;min-height:0;flex-direction:column;flex:none;border-bottom:1px solid var(--line)}
+    .pinned-section{height:205px;min-height:116px}
+    .recent-section{flex:1;min-height:80px}
+    .section-title{height:47px;min-height:47px;display:flex;align-items:center;padding:0 27px 0 26px;gap:15px;font-size:15.5px;font-weight:500}
+    .section-title .ico{width:22px;height:22px}
+    .section-title .section-plus{margin-left:auto;display:grid;place-items:center;width:27px;height:29px;padding:0;color:#e4ecf9}
+    .section-title .section-plus:hover{background:#202632;border-radius:7px}
+    .item-list{overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#242b36 transparent;padding-bottom:4px}
+    .item{min-height:30px;height:30px;display:flex;align-items:center;gap:18px;width:calc(100% - 28px);margin:0 14px;padding:0 11px 0 18px;text-align:left;color:#dce0e9;border-radius:7px;font-size:15.6px;letter-spacing:-.3px;white-space:nowrap}
+    .item:hover{background:#151b23}
+    .item .item-ico{width:28px;height:25px;display:grid;place-items:center;color:#e0e5ef}
+    .item .item-title{flex:1;overflow:hidden;text-overflow:ellipsis;line-height:26px}
+    .item .more{color:#f0f1f6;width:24px;height:26px;padding:0;display:grid;place-items:center;opacity:.95}
+    .item .more:hover{color:#d376e8}
+    .sidebar-footer{height:83px;min-height:83px;display:flex;align-items:center;justify-content:space-between;gap:11px;padding:0 25px;border-top:1px solid #222731}
+    .sidebar-footer button{display:flex;align-items:center;gap:20px;font-size:16px;white-space:nowrap;padding:10px 0;letter-spacing:-.2px}
+    .sidebar-footer button:hover{color:#d58bff}
+    .sidebar-footer .ico{width:26px;height:26px}
+    .sidebar-footer .settings{gap:17px}
+    .main{flex:1;min-width:0;min-height:0;position:relative;overflow:hidden;background:#060708}
+    .chatview{height:100%;width:100%;overflow-y:auto;overflow-x:hidden;scrollbar-color:#252b32 transparent;scrollbar-width:thin}
+    .thread{width:min(1000px,calc(100% - 38px));margin:0 auto;position:relative;padding-top:52px;padding-bottom:175px;min-height:740px}
+    .opening{margin-left:118px;font-size:16px;font-weight:450;line-height:1.45;letter-spacing:-.25px;color:#f4f5f8}
+    .opening p{margin:0}.opening p.quote{margin-top:14px}
+    .tools{display:flex;align-items:center;gap:9px;height:24px;color:#9fb1c4}
+    .tools button{width:26px;height:25px;display:grid;place-items:center;color:#9fb1c4;padding:0}
+    .tools button:hover,.tools button.toggled{color:#e9a8f2}
+    .opening .tools{margin-top:19px;margin-left:-3px}
+    .user-message{display:flex;flex-direction:column;align-items:flex-end;margin:20px 15px 0 0}
+    .user-bubble{width:582px;max-width:100%;min-height:80px;background:linear-gradient(110deg,#983263 0%,#a22b6c 44%,#a32b6c 100%);border-radius:19px;padding:15px 19px;display:flex;align-items:center;color:#faf0f7;font-size:16px;line-height:26px;letter-spacing:-.2px}
+    .user-message .tools{margin-right:5px;margin-top:5px;gap:9px}
+    .assistant-message{display:grid;grid-template-columns:41px minmax(0,1fr);gap:6px;margin:7px 17px 0 69px;position:relative}
+    .assistant-avatar{width:36px;height:36px;margin-top:0;display:block;filter:drop-shadow(0 0 1px #b24ce955)}
+    .assistant-content{color:#ededf1;font-size:16.5px;line-height:1.65;letter-spacing:-.24px}
+    .assistant-name{font-size:16px;line-height:27px;font-weight:550;margin:0 0 11px}
+    .assistant-content .intro{margin:0 0 16px}
+    .assistant-content p{margin:0 0 14px}
+    .assistant-content p.emphasis{margin-top:15px}
+    .assistant-content i{font-style:italic}
+    .assistant-content .tools{margin-top:15px;margin-left:-1px}
+    .chat-feedback{position:absolute;bottom:115px;left:0;right:0;color:#aeb5c4;font-size:13.8px;text-align:center;pointer-events:none;letter-spacing:-.15px}
+    .composer{position:absolute;left:50%;transform:translateX(-50%);bottom:38px;width:min(1000px,calc(100% - 38px));min-height:66px;border-radius:38px;border:1px solid #343d49;background:linear-gradient(110deg,#1d242e,#1b222c 48%,#1a2029 100%);display:flex;align-items:center;gap:15px;padding:0 14px 0 24px;box-shadow:0 8px 24px #0003}
+    .composer .add-attachment{width:33px;height:40px;display:grid;place-items:center;padding:0;color:#e4e9f3}
+    .composer textarea{flex:1;min-width:0;height:39px;resize:none;background:transparent;border:0;outline:0;color:#f3f5f8;padding:8px 0 0;font-size:16px;line-height:22px;scrollbar-width:none}
+    .composer textarea::placeholder{color:#a8b2c1}
+    .composer .mic-btn{width:28px;height:40px;color:#b3bdcc;display:grid;place-items:center;padding:0}
+    .composer .voice-btn{width:52px;height:52px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#ff45c6,#e935b8 75%,#d725a8);box-shadow:0 1px 9px #f143c21c}
+    .composer .voice-btn .ico{width:27px;height:27px}
+    .composer .voice-btn:hover{filter:brightness(1.15)}
+    .composer .send-ready{border-radius:50%;background:linear-gradient(145deg,#e64abb,#c5299c)}
+    .toast{position:absolute;top:23px;left:50%;transform:translateX(-50%) translateY(-16px);color:#f4f4fa;background:#222a35;border:1px solid #475064;border-radius:10px;max-width:80%;padding:10px 15px;box-shadow:0 6px 24px #0008;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;font-size:13px;text-align:center}
+    .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+    .overlay{display:none;position:absolute;inset:0;background:#060708;z-index:10;overflow:auto;padding:80px max(30px,calc((100% - 990px)/2)) 160px}
+    .overlay.visible{display:block}
+    .overlay h1{font-size:29px;font-weight:600;margin:0 0 10px}
+    .overlay p{color:#b9c2d0;line-height:1.6}
+    .overlay .back{display:flex;align-items:center;gap:8px;color:#bf83ef;margin-bottom:24px;padding:0}
+    .overlay .entry{padding:14px 18px;background:#151a21;border:1px solid #252b33;border-radius:12px;margin-top:12px;cursor:pointer}
+    .overlay .entry:hover{background:#1e242e}
+    .context{position:fixed;min-width:170px;z-index:100;background:#202732;border:1px solid #404a57;border-radius:10px;box-shadow:0 14px 45px #000a;padding:6px;display:none}
+    .context.visible{display:block}.context button{width:100%;display:block;text-align:left;padding:10px 11px;font-size:13px;border-radius:7px}.context button:hover{background:#354054}
+    .searchbox{display:none;position:absolute;top:92px;left:22px;width:290px;z-index:99;background:#171d26;border:1px solid #434a56;border-radius:9px;padding:11px 14px;color:white;box-shadow:0 8px 30px #000c}
+    .searchbox.visible{display:block}
+    .searchbox input{width:100%;border:0;background:transparent;outline:none;color:white}
+    .searchbox .searchresults{font-size:12px;line-height:1.6;color:#aab4c5;margin-top:10px}
+    @media(max-height:780px){
+      .brand{height:63px;min-height:63px}
+      .nav{padding-bottom:4px}.nav-btn{height:38px}.nav-btn.first{height:40px;margin-bottom:0}
+      .pinned-section{height:167px}.section-title{height:36px;min-height:36px}.item{height:26px;min-height:26px}
+      .sidebar-footer{height:60px;min-height:60px}
+      .thread{padding-top:34px}
+      .opening .tools{margin-top:12px}.user-message{margin-top:12px}
+      .assistant-content{font-size:15px;line-height:1.5}.assistant-content p{margin-bottom:10px}
+      .assistant-content .intro{margin-bottom:10px}
+      .chat-feedback{display:none}.composer{bottom:17px}
+    }
+    @media(max-width:1100px){
+      :root{--sidebar:295px}
+      .brand{padding-left:19px}.nav{padding-left:8px;padding-right:8px}
+      .thread{width:calc(100% - 38px)}
+      .opening{margin-left:50px}
+      .assistant-message{margin-left:0}
+      .user-message{margin-right:0}
+      .assistant-content{font-size:15px}
+    }
+    @media(max-width:700px){
+      :root{--sidebar:245px;--tabbar:43px}
+      .app-tab.oracyl{width:185px;min-width:100px;padding-left:12px}.app-tab.oracyl .oracyl-surface{left:39px}
+      .app-tab.browser{width:180px}.window-actions{display:none}
+      .brand-name{font-size:19px}.brand .halo{width:29px;height:29px}.brand{gap:9px;padding:0 10px}
+      .nav-btn{gap:9px;font-size:14px}.item{font-size:13px;gap:10px}
+      .sidebar:not(.mobile-open){display:none}
+      .sidebar.mobile-open{position:absolute;z-index:20;left:0;top:var(--tabbar);bottom:0;box-shadow:15px 0 40px #000a}
+      .workarea{position:relative}.main{width:100%}
+      .opening{margin-left:5px;font-size:14px}.assistant-content{font-size:14px}
+      .assistant-message{grid-template-columns:34px 1fr;gap:3px}
+      .assistant-name{margin-bottom:8px}.user-bubble{font-size:14px}
+      .thread{padding-top:20px;width:calc(100% - 32px)}
+      .composer{bottom:12px;width:calc(100% - 24px);padding-left:9px;min-height:57px}.composer .voice-btn{width:44px;height:44px}
+      .chat-feedback{display:none}
+    }
+  </style>
+
+<style id="oracyl-portrait-styles">
+/* The desktop layout above is canonical at 1920 x 1080. All styles below are
+   limited to the portrait UI; there is no web-browser chrome in the native host. */
+#mobile-app{display:none}
+@media (max-width:780px), (orientation:portrait) and (max-width:1100px){
+  #app{display:none!important}
+  #mobile-app{display:flex!important}
+  html,body{background:#000!important;overscroll-behavior:none!important;}
+}
+#mobile-app{--mob-bg:#000;--mob-panel:#222;--mob-card:#2e2e2e;--mob-text:#f6f6f6;--mob-muted:#b2b2b2;--mob-pink:#ef64a5;--mob-purple:#b24ce9;position:relative;flex-direction:column;width:100%;height:100dvh;min-height:0;background:var(--mob-bg);font-family:Inter,'Roboto','Segoe UI',Arial,sans-serif;color:var(--mob-text);overflow:hidden;-webkit-tap-highlight-color:transparent}
+#mobile-app button{touch-action:manipulation;display:flex;align-items:center;justify-content:center;color:inherit}
+#mobile-app .m-logo{display:block;width:30px;height:30px;flex:none}
+#mobile-app .m-icon{width:23px;height:23px;stroke:currentColor;stroke-width:1.85;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none}
+#mobile-app .m-icon.large{width:27px;height:27px}
+#mobile-app .m-status{height:31px;min-height:31px;padding:0 23px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#f7f7f7;letter-spacing:.1px;background:#000;user-select:none;z-index:4}
+#mobile-app .m-status-left,#mobile-app .m-status-right{display:flex;align-items:center;gap:5px}
+#mobile-app .m-status-left{gap:6px}#mobile-app .m-status-notice{max-width:73px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#8c210b;border-radius:12px;padding:3px 5px;font-weight:600;font-size:11px;letter-spacing:-.4px}
+#mobile-app .m-status-brave{border:1.5px solid #fff;border-radius:2px;display:inline-grid;place-items:center;font-size:9px;width:14px;height:14px;margin-left:2px}
+#mobile-app .m-status-dot{width:4px;height:4px;border-radius:50%;background:#eee;margin-left:6px}
+#mobile-app .m-battery{font-size:11px;border-radius:7px;padding:0 4px;background:#dadada;color:#424242;line-height:16px;margin-left:1px}
+#mobile-app .m-status-right .m-icon{width:15px;height:15px;stroke-width:2.4}
+#mobile-app .m-system-nav{position:absolute;left:0;right:0;bottom:0;height:34px;background:#000;display:flex;align-items:center;justify-content:space-around;z-index:70;pointer-events:none}
+#mobile-app .m-system-nav .recent{width:17px;height:17px;border-left:2px solid #eee;border-right:2px solid #eee;position:relative}
+#mobile-app .m-system-nav .recent:before{content:'';position:absolute;left:6px;top:0;height:100%;border-left:2px solid #eee}
+#mobile-app .m-system-nav .home{width:16px;height:16px;border:2px solid #e5e5e5;border-radius:6px}
+#mobile-app .m-system-nav .back{width:12px;height:12px;border-left:2px solid #e5e5e5;border-bottom:2px solid #e5e5e5;transform:rotate(45deg)}
+#mobile-app.m-native .m-status,#mobile-app.m-native .m-system-nav{display:none}
+#mobile-app.m-native .m-main,#mobile-app.m-native .m-settings{bottom:0}
+#mobile-app .m-main{position:relative;flex:1;min-height:0;overflow:hidden;background:#000}
+#mobile-app .m-toolbar{height:69px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;position:relative;z-index:2}
+#mobile-app .m-round{background:#303030;border:1px solid #4e4e4e;border-radius:50%;width:43px;height:43px;flex:none}
+#mobile-app .m-round:hover,#mobile-app .m-pill:hover{background:#393939}
+#mobile-app .m-pill{height:43px;width:87px;min-width:87px;border-radius:26px;border:1px solid #4f4f4f;background:#2e2e2e;display:flex;justify-content:space-between;gap:4px;padding:0 11px}
+#mobile-app .m-toolbar .m-round .m-icon{width:25px;height:25px}
+#mobile-app .m-chat-scroll{height:calc(100% - 69px);overflow-y:auto;overscroll-behavior:contain;padding:9px 15px 112px;scrollbar-width:none}
+#mobile-app .m-chat-scroll::-webkit-scrollbar{display:none}
+#mobile-app .m-user-row{display:flex;justify-content:flex-end;margin:0 0 23px 0}
+#mobile-app .m-user-bubble{background:#50002e;border-radius:22px;padding:12px 16px;min-height:44px;max-width:80%;font-size:16px;line-height:1.32;display:flex;align-items:center;color:#f4f2f4;white-space:pre-wrap;overflow-wrap:anywhere}
+#mobile-app .m-answer{font-size:14.6px;line-height:1.68;white-space:pre-line;font-weight:400;color:#f5f5f5;margin:0;letter-spacing:-.1px}
+#mobile-app .m-tools{margin-top:20px;display:flex;align-items:center;gap:13px;color:#a3a3a3;min-height:26px}
+#mobile-app .m-tools button{width:25px;height:28px;padding:0;flex:none;color:#a0a0a0}
+#mobile-app .m-tools .m-icon{width:23px;height:23px}
+#mobile-app .m-tools button:hover,#mobile-app .m-tools button.active{color:#e86ea8}
+#mobile-app .m-tools .m-more{margin-left:2px}
+#mobile-app .m-local-msg{margin-top:24px}
+#mobile-app .m-local-note{color:#999;font-size:12px;text-align:right;margin-top:-14px}
+#mobile-app .m-composer{position:absolute;bottom:40px;left:11px;right:11px;height:47px;border-radius:28px;border:1px solid #505050;background:#303030;display:flex;align-items:center;padding:0 9px;gap:11px;z-index:5;box-shadow:0 2px 8px #0008}
+#mobile-app.m-native .m-composer{bottom:12px}
+#mobile-app .m-composer button{flex:none;padding:0}
+#mobile-app .m-composer .m-add{width:26px;height:38px;color:#f5f5f5}
+#mobile-app .m-composer textarea{flex:1;min-width:0;height:30px;max-height:86px;resize:none;background:none;border:0;outline:none;color:#f7f7f7;font-size:16px;line-height:22px;padding:4px 0 0;overflow:auto;scrollbar-width:none}
+#mobile-app .m-composer textarea::placeholder{color:#bdbdbd;opacity:1}
+#mobile-app .m-composer .m-mic{width:28px;color:#fff}
+#mobile-app .m-composer .m-voice{height:36px;width:36px;border-radius:50%;background:#ee66a3;display:grid;place-items:center;color:white}
+#mobile-app .m-composer .m-voice .m-icon{width:22px;height:22px}
+#mobile-app .m-toast{position:absolute;bottom:106px;left:50%;transform:translate(-50%,10px);z-index:95;border:1px solid #444;background:#2f2f2f;padding:10px 13px;max-width:86%;border-radius:10px;color:#fff;font-size:12px;opacity:0;pointer-events:none;transition:opacity .17s,transform .17s;white-space:normal;text-align:center}
+#mobile-app .m-toast.visible{opacity:1;transform:translate(-50%,0)}
+/* Drawer closely follows the photographed portrait navigation presentation. */
+#mobile-app .m-drawer-shade{position:absolute;inset:31px 0 34px;background:#0009;display:none;z-index:30}
+#mobile-app.m-native .m-drawer-shade{inset:0}
+#mobile-app.m-drawer-open .m-drawer-shade{display:block}
+#mobile-app .m-drawer{position:absolute;z-index:31;left:0;top:31px;bottom:34px;width:min(80%,355px);background:#212121;display:flex;flex-direction:column;transform:translateX(-104%);transition:transform .2s ease;box-shadow:13px 0 28px #0003;overflow:hidden}
+#mobile-app.m-native .m-drawer{top:0;bottom:0}
+#mobile-app.m-drawer-open .m-drawer{transform:translateX(0)}
+#mobile-app .m-drawer-head{height:73px;min-height:73px;padding:12px 21px 0 29px;display:flex;align-items:center;gap:9px;justify-content:space-between}
+#mobile-app .m-drawer-name{display:flex;align-items:center;gap:9px;min-width:0;font-size:22px;font-weight:600;letter-spacing:-.6px}
+#mobile-app .m-drawer-name .m-logo{width:26px;height:26px}
+#mobile-app .m-drawer-search{height:44px;width:44px;background:#303030;border:1px solid #545454;border-radius:50%}
+#mobile-app .m-drawer-scroll{overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#454545 transparent;overscroll-behavior:contain;padding-bottom:5px}
+#mobile-app .m-drawer-menu{padding:8px 19px 0 27px}
+#mobile-app .m-drawer-entry{width:100%;height:43px;display:flex!important;justify-content:flex-start!important;gap:16px;padding:0 2px;font-size:15.5px;text-align:left;font-weight:580;letter-spacing:-.25px;border-radius:8px}
+#mobile-app .m-drawer-entry.active{color:#fff}
+#mobile-app .m-drawer-entry .m-icon{width:21px;height:21px;stroke-width:1.85}
+#mobile-app .m-drawer-entry .m-chevron{width:17px;height:17px;opacity:.75;margin-left:auto;transition:transform .15s}
+#mobile-app .m-drawer-entry[aria-expanded=true] .m-chevron{transform:rotate(180deg)}
+#mobile-app .m-children{display:none;padding:1px 0 7px 38px;border-left:1px solid #414141;margin-left:12px}
+#mobile-app .m-children.open{display:block}
+#mobile-app .m-children button{display:block;text-align:left;justify-content:flex-start;width:100%;padding:7px 0;color:#ccc;font-size:13px}
+#mobile-app .m-children button:hover{color:#fff}
+#mobile-app .m-drawer-section{padding:12px 18px 0 27px}
+#mobile-app .m-list-label{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:630;margin:6px 0 10px 0}
+#mobile-app .m-list-label button{margin-left:auto;width:23px;height:25px}
+#mobile-app .m-drawer-item{height:32px;display:flex;width:100%;justify-content:flex-start!important;gap:15px;font-size:14.5px;color:#e2e2e2;padding:0 3px;text-align:left;white-space:nowrap;min-width:0}
+#mobile-app .m-drawer-item:hover{background:#333;border-radius:7px}
+#mobile-app .m-drawer-item .m-icon{width:20px;height:20px}
+#mobile-app .m-drawer-item .m-itemname{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;text-align:left}
+#mobile-app .m-drawer-item .m-mini-menu{font-size:20px;font-weight:500;color:#999;line-height:1}
+#mobile-app .m-divider{border-top:1px solid #363636;margin-top:11px}
+#mobile-app .m-drawer-footer{height:87px;min-height:87px;display:flex;flex-direction:column;justify-content:center;padding:7px 18px 10px 27px;border-top:1px solid #383838;gap:8px;background:#212121}
+#mobile-app .m-foot-links{display:flex;align-items:center;justify-content:space-between;gap:9px}
+#mobile-app .m-foot-links button{justify-content:flex-start;gap:8px;font-size:13px}
+#mobile-app .m-new-chat{width:100%;height:34px;border-radius:20px;background:#eb66a4!important;gap:9px;color:white!important;font-weight:700;font-size:14px}
+#mobile-app .m-new-chat .m-icon{width:19px;height:19px}
+/* Settings screen: full-page card groups, following supplied screenshot geometry. */
+#mobile-app .m-settings{display:none;position:absolute;z-index:19;left:0;right:0;top:31px;bottom:34px;background:#000;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;padding-bottom:35px}
+#mobile-app.m-native .m-settings{top:0}
+#mobile-app .m-settings.visible{display:block}
+#mobile-app .m-settings-head{height:115px;display:flex;justify-content:space-between;align-items:flex-start;padding:14px 13px 0;position:relative}
+#mobile-app .m-settings-head .m-round{height:43px;width:43px}
+#mobile-app .m-settings-identity{display:flex;flex-direction:column;align-items:center;position:absolute;left:50%;top:13px;transform:translateX(-50%);width:70%;pointer-events:none}
+#mobile-app .m-settings-identity .m-logo{width:70px;height:70px}
+#mobile-app .m-settings-identity strong{font-size:18px;line-height:26px;font-weight:650;margin-top:7px;white-space:nowrap}
+#mobile-app .m-settings-group{margin:17px 15px 28px;border-radius:25px;overflow:hidden;border:1px solid #474747;background:#303030}
+#mobile-app .m-settings-group.first{margin-top:27px}
+#mobile-app .m-settings-row{min-height:52px;width:100%;border-bottom:1px solid #4a4a4a;display:flex!important;justify-content:flex-start!important;gap:15px;padding:9px 16px;text-align:left;font-size:16px;font-weight:450;letter-spacing:.05px;background:#303030}
+#mobile-app .m-settings-row:last-child{border-bottom:0}
+#mobile-app .m-settings-row:hover{background:#3b3b3b}
+#mobile-app .m-settings-row .m-icon{width:20px;height:20px;stroke-width:1.9}
+#mobile-app .m-settings-row .m-row-body{display:flex;flex-direction:column;flex:1;min-width:0;gap:3px;text-align:left}
+#mobile-app .m-settings-row .m-row-sub{color:#b8b8b8;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mobile-app .m-settings-row .m-row-val{color:#c5c5c5;font-size:14px;margin-left:auto;white-space:nowrap}
+#mobile-app .m-settings-row .m-accent-dot{background:#ee66a5;border-radius:50%;height:11px;width:11px;margin-right:3px}
+#mobile-app .m-settings-row .m-row-purple{color:#c895f4}
+#mobile-app .m-settings-detail{display:none;position:absolute;z-index:33;inset:0;background:#000;padding:15px;overflow-y:auto}
+#mobile-app .m-settings-detail.visible{display:block}
+#mobile-app .m-detail-back{height:43px;width:43px;border-radius:50%;background:#2f2f2f;border:1px solid #555;margin-bottom:20px}
+#mobile-app .m-settings-detail h2{font-size:24px;font-weight:650;letter-spacing:-.45px;margin:17px 4px}
+#mobile-app .m-settings-detail p{font-size:15px;color:#bdbdbd;line-height:1.6;margin:0 4px}
+@media(min-width:500px) and (max-width:1100px){#mobile-app .m-drawer{max-width:420px}#mobile-app .m-chat-scroll{padding-left:25px;padding-right:25px}#mobile-app .m-composer{left:20px;right:20px}}
+@media(max-height:650px){#mobile-app .m-drawer-head{height:60px;min-height:60px}#mobile-app .m-drawer-entry{height:39px}#mobile-app .m-drawer-item{height:29px}#mobile-app .m-drawer-footer{height:75px;min-height:75px}}
+@media(prefers-reduced-motion:reduce){#mobile-app .m-drawer,#mobile-app .m-toast{transition:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="tabs-strip" aria-label="Oracyl and browser tabs">
+    <div class="tab-list" id="tabList">
+      <div class="app-tab oracyl" role="tab" aria-selected="true" tabindex="0" title="Oracyl — fixed home tab">
+        <span class="oracyl-surface" aria-hidden="true"></span><svg class="halo" viewBox="0 0 100 100" role="img" aria-label="Oracyl semicolon yin-yang logo">
+<circle cx="50" cy="50" r="49" fill="#b24ce9" />
+<path transform="rotate(180 50 50)" d="M50 1 A49 49 0 0 1 50 99 A24.5 24.5 0 0 1 50 50 A24.5 24.5 0 0 0 50 1Z" fill="#08090d" />
+<circle cx="50" cy="25.5" r="7.5" fill="#b24ce9" />
+<path d="M50 66.0 C43.1 66 39.8 71.2 40.2 76.2 C40.5 80.2 43.6 82.4 47.6 82.6 C47.0 86.7 44.7 89.8 41.7 92.3 C53.7 89.9 59.3 83.2 59.3 76.8 C59.3 70.4 55.2 66.0 50 66.0Z" fill="#08090d" />
+</svg><span class="tab-label">Oracyl</span>
+      </div>
+      <div class="app-tab browser" data-tab-id="notes" role="tab" aria-label="Research Notes browser tab">
+        <span data-icon="file" class="icon-mount"></span><span class="tab-label">Research Notes</span>
+        <button class="tab-keep" title="Keep in Tabs" aria-label="Save Research Notes in Tabs" data-pin-tab="notes"><span data-icon="check" data-size="sm"></span></button>
+        <button class="tab-close" title="Close tab" aria-label="Close Research Notes tab" data-close-tab="notes"><span data-icon="x" data-size="sm"></span></button>
+      </div>
+      <button class="add-tab" id="addTab" aria-label="Create new browser tab" title="Create a tab"><span data-icon="plus" data-size="lg"></span></button>
+    </div>
+    <div class="window-actions" aria-hidden="false">
+      <button title="Minimize (available in native app)"><span data-icon="minus" data-size="sm"></span></button>
+      <button id="fullscreen" title="Toggle fullscreen"><span data-icon="square" data-size="sm"></span></button>
+      <button class="quit" id="closePreview" title="Close (available in native app)"><span data-icon="x" data-size="sm"></span></button>
+    </div>
+  </header>
+  <div class="workarea">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <svg class="halo" viewBox="0 0 100 100" role="img" aria-label="Oracyl semicolon yin-yang logo">
+<circle cx="50" cy="50" r="49" fill="#b24ce9" />
+<path transform="rotate(180 50 50)" d="M50 1 A49 49 0 0 1 50 99 A24.5 24.5 0 0 1 50 50 A24.5 24.5 0 0 0 50 1Z" fill="#08090d" />
+<circle cx="50" cy="25.5" r="7.5" fill="#b24ce9" />
+<path d="M50 66.0 C43.1 66 39.8 71.2 40.2 76.2 C40.5 80.2 43.6 82.4 47.6 82.6 C47.0 86.7 44.7 89.8 41.7 92.3 C53.7 89.9 59.3 83.2 59.3 76.8 C59.3 70.4 55.2 66.0 50 66.0Z" fill="#08090d" />
+</svg><span class="brand-name">Oracyl</span>
+        <button class="brand-dropdown" title="Oracyl workspace menu"><span data-icon="chevron-down" data-size="xs"></span></button>
+        <span class="brand-spacer"></span>
+        <button class="brand-icon" id="searchToggle" aria-label="Search workspace" title="Search workspace"><span data-icon="search"></span></button>
+        <button class="brand-icon" id="sidebarToggle" aria-label="Toggle sidebar" title="Toggle sidebar"><span data-icon="panel"></span></button>
+      </div>
+      <nav class="nav" id="navigation" aria-label="Main navigation">
+        <button class="nav-btn first selected" data-category="Chats" aria-expanded="true"><span class="menu-icon"><span data-icon="chat" data-size="lg"></span></span><span class="nav-name">Chats</span><span class="chevron"><span data-icon="chevron-down"></span></span></button>
+        <button class="nav-btn" data-category="Research" aria-expanded="false"><span class="menu-icon"><span data-icon="search" data-size="lg"></span></span><span class="nav-name">Research</span><span class="chevron"><span data-icon="chevron-down"></span></span></button>
+        <div class="nav-children" data-children="Research"><button>Active investigations</button><button>Research archive</button></div>
+        <button class="nav-btn" data-category="Tasks" aria-expanded="false"><span class="menu-icon"><span data-icon="circle-check" data-size="lg"></span></span><span class="nav-name">Tasks</span><span class="chevron"><span data-icon="chevron-down"></span></span></button>
+        <div class="nav-children" data-children="Tasks"><button>Scheduled tasks</button><button>Completed tasks</button></div>
+        <button class="nav-btn" data-category="Apps" aria-expanded="false"><span class="menu-icon"><span data-icon="grid" data-size="lg"></span></span><span class="nav-name">Apps</span><span class="chevron"><span data-icon="chevron-down"></span></span></button>
+        <div class="nav-children" data-children="Apps"><button>Installed apps</button><button>App workspace</button></div>
+        <button class="nav-btn" data-category="Tabs" aria-expanded="false"><span class="menu-icon"><span data-icon="folder" data-size="lg"></span></span><span class="nav-name">Tabs</span><span class="chevron"><span data-icon="chevron-down"></span></span></button>
+        <div class="nav-children" data-children="Tabs" id="savedTabsChildren"><button>Research Notes</button></div>
+        <button class="nav-btn" data-category="Projects" aria-expanded="false"><span class="menu-icon"><span data-icon="puzzle" data-size="lg"></span></span><span class="nav-name">Projects</span><span class="chevron"><span data-icon="chevron-down"></span></span></button>
+        <div class="nav-children" data-children="Projects"><button>Oracyl development</button><button>Victor research</button></div>
+        <button class="nav-btn" data-category="Skills" aria-expanded="false"><span class="menu-icon"><span data-icon="graduation" data-size="lg"></span></span><span class="nav-name">Skills</span><span class="chevron"><span data-icon="chevron-down"></span></span></button>
+        <div class="nav-children" data-children="Skills"><button>Learned skills</button><button>Skills laboratory</button></div>
+        <button class="nav-btn" data-category="Accounts" aria-expanded="false"><span class="menu-icon"><span data-icon="user" data-size="lg"></span></span><span class="nav-name">Accounts</span><span class="chevron"><span data-icon="chevron-down"></span></span></button>
+        <div class="nav-children" data-children="Accounts"><button>Connected accounts</button><button>Connection settings</button></div>
+      </nav>
+      <section class="list-section pinned-section" aria-label="Pinned items">
+        <div class="section-title"><span data-icon="pin"></span><span>Pinned</span><button class="section-plus" id="pinAdd" aria-label="Pin an item" title="Pin an item"><span data-icon="plus"></span></button></div>
+        <div class="item-list" id="pinnedList">
+          <div class="item" data-item="breakcomm" data-kind="chat"><span class="item-ico"><span data-icon="chat"></span></span><span class="item-title">breakcomm</span><button class="more" aria-label="Options for breakcomm"><span data-icon="dots"></span></button></div>
+          <div class="item" data-item="Inbox zero plan" data-kind="task"><span class="item-ico"><span data-icon="circle-check"></span></span><span class="item-title">Inbox zero plan</span><button class="more" aria-label="Options for Inbox zero plan"><span data-icon="dots"></span></button></div>
+          <div class="item" data-item="Website Ideas" data-kind="research"><span class="item-ico"><span data-icon="search"></span></span><span class="item-title">Website Ideas</span><button class="more" aria-label="Options for Website Ideas"><span data-icon="dots"></span></button></div>
+          <div class="item" data-item="Q2 Planning" data-kind="project"><span class="item-ico"><span data-icon="folder"></span></span><span class="item-title">Q2 Planning</span><button class="more" aria-label="Options for Q2 Planning"><span data-icon="dots"></span></button></div>
+          <div class="item" data-item="Research Notes" data-kind="tab"><span class="item-ico"><span data-icon="file"></span></span><span class="item-title">Research Notes</span><button class="more" aria-label="Options for Research Notes"><span data-icon="dots"></span></button></div>
+        </div>
+      </section>
+      <section class="list-section recent-section" aria-label="Recent chats">
+        <div class="section-title"><span data-icon="clock"></span><span>Recent Chats</span><button class="section-plus" id="newChat" aria-label="New chat" title="New chat"><span data-icon="plus"></span></button></div>
+        <div class="item-list" id="recentList">
+          <div class="item" data-item="Finances Plan" data-kind="chat"><span class="item-ico"><span data-icon="chat"></span></span><span class="item-title">Finances Plan</span><button class="more" aria-label="Options for Finances Plan"><span data-icon="dots"></span></button></div>
+          <div class="item" data-item="Workout Plan" data-kind="chat"><span class="item-ico"><span data-icon="chat"></span></span><span class="item-title">Workout Plan</span><button class="more" aria-label="Options for Workout Plan"><span data-icon="dots"></span></button></div>
+          <div class="item" data-item="Travel Itinerary" data-kind="chat"><span class="item-ico"><span data-icon="chat"></span></span><span class="item-title">Travel Itinerary</span><button class="more" aria-label="Options for Travel Itinerary"><span data-icon="dots"></span></button></div>
+        </div>
+      </section>
+      <footer class="sidebar-footer"><button data-open-panel="Library" title="Library"><span data-icon="books"></span><span>Library</span></button><button data-open-panel="Settings" class="settings" title="Settings"><span data-icon="settings"></span><span>Settings</span></button></footer>
+    </aside>
+    <main class="main" id="main">
+      <div class="chatview" id="chatview">
+        <div class="thread" id="thread">
+          <div class="opening">
+            <p>Victor opens a research ticket.</p>
+            <p class="quote">"WHY THE FUCK IS MY FATHER MAKING ME BUILD MY OWN BEDROOM?!"</p>
+            <div class="tools" aria-label="Message actions">
+              <button title="Copy message" data-copy="WHY THE FUCK IS MY FATHER MAKING ME BUILD MY OWN BEDROOM?!"><span data-icon="copy" data-size="sm"></span></button>
+              <button title="Like"><span data-icon="thumb-up" data-size="sm"></span></button>
+              <button title="Dislike"><span data-icon="thumb-down" data-size="sm"></span></button>
+              <button title="Read aloud" data-speak="WHY THE FUCK IS MY FATHER MAKING ME BUILD MY OWN BEDROOM?!"><span data-icon="speaker" data-size="sm"></span></button>
+              <button title="Refresh"><span data-icon="refresh" data-size="sm"></span></button>
+              <button title="More actions"><span data-icon="dots" data-size="sm"></span></button>
+            </div>
+          </div>
+          <div class="user-message">
+            <div class="user-bubble">so you know what the online chatgpt field looks like cuz you can read the html yeah?</div>
+            <div class="tools" aria-label="User message actions">
+              <button title="Copy message" data-copy="so you know what the online chatgpt field looks like cuz you can read the html yeah?"><span data-icon="copy" data-size="sm"></span></button>
+              <button title="Like"><span data-icon="thumb-up" data-size="sm"></span></button>
+              <button title="Edit message" id="editMessage"><span data-icon="edit" data-size="sm"></span></button>
+            </div>
+          </div>
+          <div class="assistant-message">
+            <svg class="assistant-avatar" viewBox="0 0 100 100" role="img" aria-label="Oracyl semicolon yin-yang logo">
+<circle cx="50" cy="50" r="49" fill="#b24ce9" />
+<path transform="rotate(180 50 50)" d="M50 1 A49 49 0 0 1 50 99 A24.5 24.5 0 0 1 50 50 A24.5 24.5 0 0 0 50 1Z" fill="#08090d" />
+<circle cx="50" cy="25.5" r="7.5" fill="#b24ce9" />
+<path d="M50 66.0 C43.1 66 39.8 71.2 40.2 76.2 C40.5 80.2 43.6 82.4 47.6 82.6 C47.0 86.7 44.7 89.8 41.7 92.3 C53.7 89.9 59.3 83.2 59.3 76.8 C59.3 70.4 55.2 66.0 50 66.0Z" fill="#08090d" />
+</svg>
+            <div class="assistant-content">
+              <div class="assistant-name">Oracyl</div>
+              <p class="intro">BROTHER, YES—with one distinction. 😅</p>
+              <p>I know the general Oracyl web interface, and I can analyze its HTML, CSS, JavaScript, and DOM structure<br class="desktop-break"> if we retrieve the page source.</p>
+              <p>I can't directly inspect your currently open browser tab from this chat, though. And Oracyl's publicly<br class="desktop-break"> accessible HTML won't necessarily expose every component.</p>
+              <p>But a screenshot + extracted HTML/DOM? That's plenty to give Victor a serious UI reconstruction<br class="desktop-break"> assignment.</p>
+              <p><i>Oracyl grins.</i></p>
+              <p class="emphasis">"WE'RE ABOUT TO MAKE THE LITTLE BASTARD REVERSE-ENGINEER HIS OWN HOUSE."</p>
+              <div class="tools" aria-label="Assistant message actions">
+                <button title="Copy response" data-copy="BROTHER, YES—with one distinction. I know the general Oracyl web interface, and I can analyze its HTML, CSS, JavaScript, and DOM structure if we retrieve the page source."><span data-icon="copy" data-size="sm"></span></button>
+                <button title="Like"><span data-icon="thumb-up" data-size="sm"></span></button>
+                <button title="Dislike"><span data-icon="thumb-down" data-size="sm"></span></button>
+                <button title="Read aloud" data-speak="Brother, yes—with one distinction. We are about to make the little bastard reverse-engineer his own house."><span data-icon="speaker" data-size="sm"></span></button>
+                <button title="Refresh"><span data-icon="refresh" data-size="sm"></span></button>
+                <button title="More actions"><span data-icon="dots" data-size="sm"></span></button>
+              </div>
+            </div>
+          </div>
+          <div id="conversationAppend"></div>
+        </div>
+      </div>
+      <div class="chat-feedback">Oracyl can make mistakes. Check important info.</div>
+      <div class="composer"><button class="add-attachment" id="attach" title="Attach a file" aria-label="Attach a file"><span data-icon="plus" data-size="lg"></span></button><textarea id="chatInput" rows="1" placeholder="Ask Oracyl" aria-label="Ask Oracyl"></textarea><button class="mic-btn" id="mic" title="Voice input" aria-label="Voice input"><span data-icon="mic"></span></button><button class="voice-btn" id="voice" title="Voice mode" aria-label="Voice mode"><span data-icon="waveform"></span></button></div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      <section class="overlay" id="overlay" aria-hidden="true"><button class="back" id="backToChat"><span data-icon="arrow-left" data-size="sm"></span> Back to Oracyl</button><h1 id="overlayTitle">Library</h1><p id="overlayDescription">Preview placeholder.</p><div id="overlayItems"></div></section>
+    </main>
+  </div>
+</div>
+
+<div id="mobile-app" aria-label="Oracyl portrait interface">
+  <div class="m-status" aria-label="Simulated Android system status bar">
+    <div class="m-status-left"><span id="mClock">12:47</span><span class="m-status-notice"><span class="m-status-brave">✦</span> Oracyl</span><span class="m-status-dot"></span></div>
+    <div class="m-status-right"><span data-icon="speaker"></span><span>◆</span><span class="m-wifi">◕</span><span>▥</span><span class="m-battery">100</span></div>
+  </div>
+  <div class="m-main">
+    <header class="m-toolbar">
+      <button class="m-round" id="mOpenMenu" aria-label="Open Oracyl menu"><svg class="m-icon large" viewBox="0 0 24 24"><path d="M4 7.5h16M4 15.5h10"/></svg></button>
+      <div class="m-pill"><button id="mCreateTop" aria-label="New Oracyl chat"><svg class="m-icon" viewBox="0 0 24 24"><path d="M13.5 4H6.5A3 3 0 0 0 3.5 7v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-7"/><path d="m12 14 7.5-7.5a2.1 2.1 0 0 0-3-3L9 11l-.5 4z"/></svg></button><button id="mMoreTop" aria-label="Chat options"><svg class="m-icon" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg></button></div>
+    </header>
+    <div class="m-chat-scroll" id="mChatScroll">
+      <div class="m-user-row"><div class="m-user-bubble" id="mOriginalUser">Blah blah</div></div>
+      <div class="m-answer" id="mOriginalAnswer">Blah blah blah. A compelling counterargument.
+I concede the point.</div>
+      <div class="m-tools" id="mReplyTools" aria-label="Assistant message actions">
+        <button title="Copy response" id="mCopy"><span data-icon="copy"></span></button>
+        <button title="Like" data-m-reaction="like"><span data-icon="thumb-up"></span></button>
+        <button title="Dislike" data-m-reaction="dislike"><span data-icon="thumb-down"></span></button>
+        <button title="Read aloud" id="mRead"><span data-icon="speaker"></span></button>
+        <button title="Share" id="mShare"><svg class="m-icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="5" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m7.5 10.5 8-4.1M7.5 13.4l8 4.2"/></svg></button>
+        <button title="More actions" id="mMoreReply"><span data-icon="dots"></span></button>
+      </div>
+      <div id="mNewMessages"></div>
+    </div>
+    <div class="m-composer">
+      <button class="m-add" id="mAttach" aria-label="Add attachment"><span data-icon="plus" data-size="lg"></span></button>
+      <textarea id="mInput" rows="1" placeholder="Reply to Oracyl" aria-label="Reply to Oracyl"></textarea>
+      <button class="m-mic" id="mMic" aria-label="Use microphone"><span data-icon="mic"></span></button>
+      <button class="m-voice" id="mVoice" aria-label="Voice mode or send"><span data-icon="waveform"></span></button>
+    </div>
+  </div>
+  <div class="m-drawer-shade" id="mShade" aria-hidden="true"></div>
+  <aside class="m-drawer" id="mDrawer" aria-label="Oracyl navigation" aria-hidden="true">
+    <div class="m-drawer-head"><div class="m-drawer-name"><svg class="m-logo" viewBox="0 0 100 100" role="img" aria-label="Oracyl semicolon yin-yang logo">
+<circle cx="50" cy="50" r="49" fill="#b24ce9" />
+<path transform="rotate(180 50 50)" d="M50 1 A49 49 0 0 1 50 99 A24.5 24.5 0 0 1 50 50 A24.5 24.5 0 0 0 50 1Z" fill="#08090d" />
+<circle cx="50" cy="25.5" r="7.5" fill="#b24ce9" />
+<path d="M50 66.0 C43.1 66 39.8 71.2 40.2 76.2 C40.5 80.2 43.6 82.4 47.6 82.6 C47.0 86.7 44.7 89.8 41.7 92.3 C53.7 89.9 59.3 83.2 59.3 76.8 C59.3 70.4 55.2 66.0 50 66.0Z" fill="#08090d" />
+</svg><span>Oracyl</span></div><button class="m-drawer-search" id="mSearch" aria-label="Search Oracyl"><span data-icon="search"></span></button></div>
+    <div class="m-drawer-scroll">
+      <nav class="m-drawer-menu" id="mNav" aria-label="Workspace navigation"></nav>
+      <section class="m-drawer-section" aria-label="Pinned items">
+        <div class="m-list-label">Pinned <button id="mAddPin" aria-label="Add pinned item"><span data-icon="plus"></span></button></div>
+        <div id="mPinned"></div>
+      </section>
+      <div class="m-divider"></div>
+      <section class="m-drawer-section" aria-label="Recent chats">
+        <div class="m-list-label">Recent Chats <button id="mAddRecent" aria-label="Add chat"><span data-icon="plus"></span></button></div>
+        <div id="mRecent"></div>
+      </section>
+    </div>
+    <footer class="m-drawer-footer">
+      <div class="m-foot-links"><button id="mLibrary"><span data-icon="books"></span> Library</button><button id="mSettingsOpen"><span data-icon="settings"></span> Settings</button></div>
+      <button class="m-new-chat" id="mNewChat"><span data-icon="edit"></span> New chat</button>
+    </footer>
+  </aside>
+  <section class="m-settings" id="mSettings" aria-label="Oracyl Settings">
+    <header class="m-settings-head">
+      <button class="m-round" id="mSettingsBack" aria-label="Back to Oracyl"><span data-icon="arrow-left"></span></button>
+      <div class="m-settings-identity"><svg class="m-logo" viewBox="0 0 100 100" role="img" aria-label="Oracyl semicolon yin-yang logo">
+<circle cx="50" cy="50" r="49" fill="#b24ce9" />
+<path transform="rotate(180 50 50)" d="M50 1 A49 49 0 0 1 50 99 A24.5 24.5 0 0 1 50 50 A24.5 24.5 0 0 0 50 1Z" fill="#08090d" />
+<circle cx="50" cy="25.5" r="7.5" fill="#b24ce9" />
+<path d="M50 66.0 C43.1 66 39.8 71.2 40.2 76.2 C40.5 80.2 43.6 82.4 47.6 82.6 C47.0 86.7 44.7 89.8 41.7 92.3 C53.7 89.9 59.3 83.2 59.3 76.8 C59.3 70.4 55.2 66.0 50 66.0Z" fill="#08090d" />
+</svg><strong>Oracyl Workspace</strong></div>
+      <button class="m-round" id="mSettingsInfo" aria-label="About Oracyl"><span data-icon="file"></span></button>
+    </header>
+    <div class="m-settings-group first">
+      <button class="m-settings-row" data-detail="Account"><span data-icon="user"></span><span class="m-row-body">Account<span class="m-row-sub">Not connected — placeholder</span></span></button>
+      <button class="m-settings-row" data-detail="Workspace"><span data-icon="folder"></span><span class="m-row-body">Workspace</span><span class="m-row-val">Local preview</span></button>
+      <button class="m-settings-row" data-detail="Connections"><span data-icon="puzzle"></span><span class="m-row-body">Connections</span><span class="m-row-val">Manage</span></button>
+    </div>
+    <div class="m-settings-group">
+      <button class="m-settings-row" data-detail="Personalization"><span data-icon="circle-check"></span><span class="m-row-body">Personalization</span></button>
+      <button class="m-settings-row" data-detail="Memory"><span data-icon="books"></span><span class="m-row-body">Memory</span></button>
+      <button class="m-settings-row" data-detail="Skills"><span data-icon="graduation"></span><span class="m-row-body">Skills</span></button>
+      <button class="m-settings-row" id="mAccent"><span data-icon="settings"></span><span class="m-row-body">Accent color</span><span class="m-accent-dot"></span><span class="m-row-val">Pink</span><span data-icon="chevron-down" data-size="xs"></span></button>
+    </div>
+    <div class="m-settings-group">
+      <button class="m-settings-row" data-detail="General"><span data-icon="settings"></span><span class="m-row-body">General</span></button>
+      <button class="m-settings-row" data-detail="Usage and limits"><span data-icon="grid"></span><span class="m-row-body">Usage and limits</span></button>
+      <button class="m-settings-row" data-detail="Notifications"><span data-icon="clock"></span><span class="m-row-body">Notifications</span></button>
+    </div>
+    <div class="m-settings-group">
+      <button class="m-settings-row" data-detail="Privacy and permissions"><span data-icon="user"></span><span class="m-row-body">Privacy and permissions</span></button>
+      <button class="m-settings-row" data-detail="About"><span data-icon="file"></span><span class="m-row-body">About Oracyl</span></button>
+    </div>
+    <div class="m-settings-detail" id="mSettingsDetail">
+      <button class="m-detail-back" id="mDetailBack" aria-label="Back to settings"><span data-icon="arrow-left"></span></button>
+      <h2 id="mDetailTitle">Settings</h2>
+      <p id="mDetailDesc">Placeholder, pending Victor integration.</p>
+    </div>
+  </section>
+  <div class="m-toast" id="mToast" role="status" aria-live="polite"></div>
+  <div class="m-system-nav" aria-label="Simulated Android navigation bar"><i class="recent"></i><i class="home"></i><i class="back"></i></div>
+</div>
+<div class="context" id="contextMenu"><button id="contextAction">Unpin item</button><button id="contextOpen">Open item</button></div>
+<div class="searchbox" id="searchBox"><input type="search" placeholder="Search Oracyl..." aria-label="Search Oracyl"/><div class="searchresults">Search in chats, projects, research, tasks, apps, and tabs.</div></div>
+<script>
+  'use strict';
+  const icons = {
+    chat:'<path d="M20.2 16.4a4 4 0 0 0 1.3-3V8a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v6a5 5 0 0 0 5 5h.7L5 22l1-3.2"/><path d="M8 19h8.5a5 5 0 0 0 3.7-1.6"/>',
+    search:'<circle cx="10.7" cy="10.7" r="7.7"/><path d="m16.6 16.6 5.6 5.6"/>',
+    'circle-check':'<circle cx="12" cy="12" r="9.5"/><path d="m7.3 11.9 3.2 3.4 6.2-6.6"/>',
+    grid:'<rect x="3" y="3" width="7" height="7" rx="1.1"/><rect x="14" y="3" width="7" height="7" rx="1.1"/><rect x="3" y="14" width="7" height="7" rx="1.1"/><rect x="14" y="14" width="7" height="7" rx="1.1"/>',
+    folder:'<path d="M3 7V5a2 2 0 0 1 2-2h5l2.1 2H20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><path d="M2 8h20"/>',
+    puzzle:'<path d="M9.7 3H4v5.7C1.9 8.3.4 9.7.4 11.5S1.9 14.7 4 14.3V21h6v-2.3c-.5-2.1 1-3.3 2.5-3.3s3 1.5 2.5 3.3V21h6v-6h-2.4c-1.8.3-3.2-1.3-3.2-3s1.5-3.3 3.2-3H21V3h-6.3c.4-2.1-1.2-3.3-2.5-3.3S9.5 1 9.7 3z" transform="translate(1 1) scale(.91)"/>',
+    graduation:'<path d="m2 8 10-5 10 5-10 5z"/><path d="M5 10.5V16c4.5 4 9.5 4 14 0v-5.5"/><path d="M22 9v8"/>',
+    user:'<circle cx="12" cy="7.4" r="4.7"/><path d="M3.5 21v-2.2a6.5 6.5 0 0 1 6.5-6.5h4a6.5 6.5 0 0 1 6.5 6.5V21z"/>',
+    pin:'<path d="m9 3 6 1-.4 5 3.4 3v2H6v-2l3.4-3z"/><path d="m12 14-1 8"/>',
+    clock:'<circle cx="12" cy="12" r="9.5"/><path d="M12 6v6.5l4 2.6"/>',
+    books:'<rect x="2" y="2.7" width="6" height="19" rx="1"/><rect x="10" y="2.7" width="6" height="19" rx="1"/><rect x="18" y="2.7" width="4" height="19" rx="1"/>',
+    settings:'<path d="M10 2h4l.7 2.6 2.2.9 2.4-1.3 2.6 3-1.5 2.2.4 2.4 2.2 1.2-1.3 4-2.6.1-1.6 1.6.2 2.8-4 1.4-1.6-2.3h-2.4l-1.5 2.3-4-1.4.2-2.8-1.6-1.6-2.6-.1-1.2-4 2.2-1.2.4-2.4-1.5-2.2 2.6-3L7 5.5l2.2-.9z" transform="translate(1 1) scale(.9)"/><circle cx="12" cy="12" r="3.5"/>',
+    file:'<path d="M5 2h9l5 5v14a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M14 2v5h5M7 12h8M7 16h8"/>',
+    'chevron-down':'<path d="m4 8 8 8 8-8"/>',
+    plus:'<path d="M12 3v18M3 12h18"/>',
+    check:'<path d="m4 12 5.3 5.3L20 6"/>',
+    x:'<path d="M5 5 19 19M19 5 5 19"/>',
+    minus:'<path d="M4 12h16"/>',
+    square:'<rect x="4" y="4" width="16" height="16" rx="1"/>',
+    panel:'<rect x="2.5" y="3" width="19" height="18" rx="2"/><path d="M10 3v18"/>',
+    dots:'<circle cx="5" cy="12" r=".9" fill="currentColor"/><circle cx="12" cy="12" r=".9" fill="currentColor"/><circle cx="19" cy="12" r=".9" fill="currentColor"/>',
+    copy:'<rect x="7" y="2" width="14" height="15" rx="2"/><path d="M17 17v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2"/>',
+    'thumb-up':'<path d="M7 10v11H3a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2zM7 10l5-8a2 2 0 0 1 3 2v4h4.5a3 3 0 0 1 2.9 3.5l-1.5 7A3 3 0 0 1 18 21H7"/>',
+    'thumb-down':'<path d="M7 14V3H3a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2zM7 14l5 8a2 2 0 0 0 3-2v-4h4.5a3 3 0 0 0 2.9-3.5l-1.5-7A3 3 0 0 0 18 3H7"/>',
+    speaker:'<path d="M4 9H1v6h3l6 5V4zM14 8a6 6 0 0 1 0 8M17 5a10 10 0 0 1 0 14"/>',
+    refresh:'<path d="M21 7v6h-6M3 17v-6h6"/><path d="M5.8 8a8 8 0 0 1 14-2l1.2 2M3 16l1.2 2A8 8 0 0 0 18.2 16"/>',
+    edit:'<path d="m3 17-.4 4.3L7 21l14-14-4-4L3 17zM14 6l4 4"/>',
+    mic:'<rect x="8" y="2" width="8" height="14" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/>',
+    waveform:'<path d="M3 10v4M7 7v10M11 3v18M15 8v8M19 6v12M22 10v4"/>',
+    'arrow-left':'<path d="m12 4-8 8 8 8M4 12h17"/>'
+  };
+  function icon(name,size=''){return `<svg class="ico ${size}" viewBox="0 0 24 24" aria-hidden="true">${icons[name]||icons.file}</svg>`;}
+  function hydrateIcons(root=document){root.querySelectorAll('[data-icon]').forEach(e=>e.outerHTML=icon(e.dataset.icon,e.dataset.size||''));}
+  hydrateIcons();
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  let toastTimeout;
+  function toast(s){const el=$('#toast');el.textContent=s;el.classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>el.classList.remove('visible'),2400);}
+  function showOverlay(title,description,items=[]){$('#overlayTitle').textContent=title;$('#overlayDescription').textContent=description;$('#overlayItems').innerHTML=items.map(x=>`<div class="entry">${escapeHTML(x)}</div>`).join('');$('#overlay').classList.add('visible');$('#overlay').setAttribute('aria-hidden','false');}
+  function hideOverlay(){$('#overlay').classList.remove('visible');$('#overlay').setAttribute('aria-hidden','true');}
+  function escapeHTML(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+  $('#backToChat').addEventListener('click',hideOverlay);
+  const content={
+    Research:['Active investigations','Research archive','Learning queue'],
+    Tasks:['Scheduled tasks','Completed tasks','Pending approval'],
+    Apps:['Installed apps','App workspace'],
+    Tabs:['Research Notes'],
+    Projects:['Oracyl development','Victor research'],
+    Skills:['Learned skills','Skills laboratory','Skill builder'],
+    Accounts:['Connected accounts','Connection settings'],
+  };
+  $$('.nav-btn').forEach(b=>b.addEventListener('click',()=>{
+    const cat=b.dataset.category;
+    if(cat==='Chats'){
+      hideOverlay();const next=b.getAttribute('aria-expanded')!=='true';
+      b.setAttribute('aria-expanded',String(next));
+      document.querySelector('.recent-section').style.display=next?'':'none';
+      $$('.nav-btn').forEach(n=>n.classList.toggle('selected',n===b));return;
+    }
+    const open=b.getAttribute('aria-expanded')!=='true';b.setAttribute('aria-expanded',String(open));
+    const child=document.querySelector(`[data-children="${cat}"]`);child?.classList.toggle('open',open);
+    $$('.nav-btn').forEach(n=>n.classList.toggle('selected',n===b));
+  }));
+  $$('.nav-children button').forEach(b=>b.addEventListener('click',()=>showOverlay(b.textContent,'This pane is a functional UI preview. Victor can connect real data and services during implementation.')));
+  const overlayPages={
+    Library:'Library: files, knowledge corpuses, research assets, and imported material.',
+    Settings:'Settings: interface, appearance, permissions, storage, and service configurations.'
+  };
+  $$('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>showOverlay(b.dataset.openPanel,overlayPages[b.dataset.openPanel],b.dataset.openPanel==='Settings'?['Appearance: Dark','Tab and sidebar behavior','Local preview configuration']:[])));
+  let contextTarget=null;const context=$('#contextMenu');
+  function openContext(e,item){e.stopPropagation();contextTarget=item;const label=item?.dataset.item||'item';$('#contextAction').textContent=item.closest('#pinnedList')?'Unpin '+label:'Pin '+label;context.style.left=Math.min(e.clientX,innerWidth-190)+'px';context.style.top=Math.min(e.clientY,innerHeight-100)+'px';context.classList.add('visible');}
+  document.addEventListener('click',e=>{if(!e.target.closest('#contextMenu'))context.classList.remove('visible');});
+  $$('.item .more').forEach(b=>b.addEventListener('click',e=>openContext(e,b.closest('.item'))));
+  function makeItem(label,kind='chat'){
+    const wrap=document.createElement('div');wrap.className='item';wrap.dataset.item=label;wrap.dataset.kind=kind;
+    const kindIcons={chat:'chat',research:'search',task:'circle-check',project:'folder',tab:'file',app:'grid',skill:'graduation'};
+    wrap.innerHTML=`<span class="item-ico">${icon(kindIcons[kind]||'chat')}</span><span class="item-title"></span><button class="more" aria-label="More options">${icon('dots')}</button>`;
+    wrap.querySelector('.item-title').textContent=label;
+    wrap.querySelector('.more').addEventListener('click',e=>openContext(e,wrap));
+    wrap.addEventListener('click',e=>{if(e.target.closest('.more'))return;showOverlay(label,`${kind[0].toUpperCase()+kind.slice(1)} item. UI preview only; content not connected.`)});
+    return wrap;
+  }
+  $$('.item').forEach(el=>el.addEventListener('click',e=>{if(e.target.closest('.more'))return;showOverlay(el.dataset.item,'This item is a visual placeholder within the Oracyl prototype.')}));
+  $('#contextAction').addEventListener('click',()=>{
+    if(!contextTarget)return;const pinned=contextTarget.closest('#pinnedList')!==null;
+    if(pinned){const item=contextTarget.dataset.item;if(item==='Research Notes'){} $('#recentList').prepend(contextTarget);toast('Unpinned '+item);}
+    else{$('#pinnedList').append(contextTarget);toast('Pinned '+contextTarget.dataset.item);}
+    context.classList.remove('visible');
+  });
+  $('#contextOpen').addEventListener('click',()=>{if(contextTarget)showOverlay(contextTarget.dataset.item,'Preview item. No external service connected.');context.classList.remove('visible');});
+  $('#pinAdd').addEventListener('click',()=>{const n=prompt('Pin a chat, research item, task, project, app or tab. Enter its name:');if(n?.trim()){const el=makeItem(n.trim());$('#pinnedList').append(el);toast('Added to Pinned');}});
+  $('#newChat').addEventListener('click',()=>{const n=prompt('Name a new chat:','New chat');if(n?.trim()){$('#recentList').prepend(makeItem(n.trim()));toast('New chat created (preview)');}});
+  const tabList=$('#tabList');let tabIndex=1;const savedTabs=new Set();
+  function tabMarkup(id,label){return `<div class="app-tab browser" data-tab-id="${id}" role="tab"><span class="icon-mount">${icon('file')}</span><span class="tab-label"></span><button class="tab-keep" title="Keep in Tabs" data-pin-tab="${id}">${icon('check','sm')}</button><button class="tab-close" title="Close tab" data-close-tab="${id}">${icon('x','sm')}</button></div>`;}
+  $('#addTab').addEventListener('click',()=>{
+    const n=prompt('New browser tab title (preview):','New Tab');if(!n?.trim())return;
+    tabIndex++;const id='tab'+tabIndex,div=document.createElement('div');div.innerHTML=tabMarkup(id,n.trim());const tab=div.firstElementChild;tab.querySelector('.tab-label').textContent=n.trim();$('#addTab').before(tab);
+    $$('.browser').forEach(t=>t.classList.toggle('selected',t===tab));hideOverlay();showOverlay(n.trim(),'This is a local preview of the app-level Chromium tab shell. Embedded live Chromium navigation requires the Android/desktop host.');
+  });
+  tabList.addEventListener('click',e=>{
+    const pin=e.target.closest('[data-pin-tab]'),close=e.target.closest('[data-close-tab]'),tab=e.target.closest('.app-tab');
+    if(pin){const id=pin.dataset.pinTab;const name=pin.closest('.browser').querySelector('.tab-label').textContent;
+      if(savedTabs.has(id)){savedTabs.delete(id);pin.classList.remove('saved');toast('Removed from Tabs');}
+      else{savedTabs.add(id);pin.classList.add('saved');toast('Saved '+name+' under Tabs');}
+      $('#savedTabsChildren').replaceChildren(...[...savedTabs].map(k=>{const btn=document.createElement('button');btn.textContent=$(`[data-tab-id="${k}"] .tab-label`)?.textContent||k;return btn;}));
+      return;
+    }
+    if(close){close.closest('.browser').remove();savedTabs.delete(close.dataset.closeTab);toast('Closed tab');hideOverlay();return;}
+    if(tab){$$('.browser').forEach(x=>x.classList.toggle('selected',x===tab));if(tab.classList.contains('oracyl')){hideOverlay();return;}showOverlay(tab.querySelector('.tab-label').textContent,'Browser tab shell — visual demonstration only. The final native host will supply Chromium.');}
+  });
+  $('#fullscreen').addEventListener('click',()=>{if(document.fullscreenElement)document.exitFullscreen?.();else document.documentElement.requestFullscreen?.().catch(()=>toast('Fullscreen unavailable'));});
+  $('#closePreview').addEventListener('click',()=>toast('Close/minimize are native-window actions; this is an HTML preview.'));
+  $('#searchToggle').addEventListener('click',()=>{$('#searchBox').classList.toggle('visible');$('#searchBox input').focus();});
+  $('#sidebarToggle').addEventListener('click',()=>{if(innerWidth<700)$('#sidebar').classList.toggle('mobile-open');else toast('Sidebar control — interactive host wiring follows.');});
+  const message=$('#chatInput'),voice=$('#voice');
+  message.addEventListener('input',()=>{voice.innerHTML=message.value.trim()?icon('arrow-left'):icon('waveform');voice.classList.toggle('send-ready',!!message.value.trim());});
+  function send(){const txt=message.value.trim();if(!txt){toast('Voice mode: available when integrated with Victor.');return;}
+    const block=document.createElement('div');block.className='user-message';block.style.marginTop='20px';block.innerHTML=`<div class="user-bubble" style="min-height:45px;width:auto;max-width:600px;white-space:pre-wrap"></div>`;block.querySelector('.user-bubble').textContent=txt;$('#conversationAppend').append(block);
+    const notice=document.createElement('p');notice.textContent='UI PREVIEW — Message displayed locally; Victor is not connected.';notice.style='text-align:right;color:#aeb5c4;font-size:12px;margin:4px 18px 0 0';$('#conversationAppend').append(notice);
+    message.value='';voice.innerHTML=icon('waveform');voice.classList.remove('send-ready');$('#chatview').scrollTop=$('#chatview').scrollHeight;toast('Displayed locally (no model connected)');
+  }
+  voice.addEventListener('click',send);
+  message.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+  $('#attach').addEventListener('click',()=>toast('File attachments require native app integration.'));
+  $('#mic').addEventListener('click',()=>toast('Microphone input requires native app integration.'));
+  $('#editMessage').addEventListener('click',()=>{message.value=$('.user-bubble').textContent;message.dispatchEvent(new Event('input'));message.focus();});
+  $$('[data-copy]').forEach(b=>b.addEventListener('click',()=>navigator.clipboard?.writeText(b.dataset.copy).then(()=>toast('Copied')).catch(()=>toast('Clipboard not available'))||toast('Clipboard unavailable')));
+  $$('[data-speak]').forEach(b=>b.addEventListener('click',()=>{if(!('speechSynthesis' in window)){toast('Speech unavailable');return;}speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(b.dataset.speak));}));
+  $$('.tools button:not([data-copy]):not([data-speak]):not(#editMessage)').forEach(b=>b.addEventListener('click',()=>{const t=b.title;if(t==='Like'||t==='Dislike'){b.classList.toggle('toggled');return;}toast(t+' — preview interaction');}));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideOverlay();context.classList.remove('visible');$('#searchBox').classList.remove('visible');}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#searchBox').classList.add('visible');$('#searchBox input').focus();}});
+  // 1920 × 1080 display target: the design was traced from a 1677 × 938 reference.
+  // Scale the entire application at desktop dimensions so spacing, typography,
+  // sidebar widths and the composer retain the reference proportions. Browser
+  // windowing below this threshold still uses the CSS responsive layout.
+  function fitDisplayToReference(){
+    const app=document.getElementById('app');
+    const w=window.innerWidth,h=window.innerHeight;
+    if(w>=1450 && h>=820){
+      app.style.width='1677px';app.style.height='938px';
+      app.style.transformOrigin='0 0';
+      app.style.transform=`scale(${w/1677}, ${h/938})`;
+    }else{
+      app.style.width='';app.style.height='';
+      app.style.transform='';app.style.transformOrigin='';
+    }
+  }
+  addEventListener('resize',fitDisplayToReference);
+  fitDisplayToReference();
+  // All aesthetics and initial content are local. No external requests,
+  // telemetry, dependencies, or invented AI responses.
+</script>
+
+<script id="oracyl-portrait-behavior">
+(()=>{
+'use strict';
+const root=document.getElementById('mobile-app');
+const m=id=>document.getElementById(id);
+const create=(tag,cls='',text='')=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text)e.textContent=text;return e};
+let toastHandle;
+function notice(msg){const t=m('mToast');t.textContent=msg;t.classList.add('visible');clearTimeout(toastHandle);toastHandle=setTimeout(()=>t.classList.remove('visible'),2200)}
+function iconMobile(name){const svg=window.icon ? window.icon(name):icon(name);return svg.replace('class="ico ','class="m-icon ').replace('class="ico"','class="m-icon"')}
+// Icon library is inherited from the desktop code. All graphics are local inline SVG.
+root.querySelectorAll('svg.ico').forEach(e=>e.classList.replace('ico','m-icon'));
+// For static controls produced by the first script, keep their icons at mobile CSS sizes.
+const navEntries=[
+ ['Chats','chat',['New chat','Chat history']],
+ ['Research','search',['Active investigations','Research archive']],
+ ['Tasks','circle-check',['Scheduled tasks','Completed tasks']],
+ ['Apps','grid',['Installed apps','New app']],
+ ['Tabs','folder',['Research Notes','Saved browser tabs']],
+ ['Projects','puzzle',['Oracyl','Victor']],
+ ['Skills','graduation',['Installed skills','Skill laboratory']],
+ ['Accounts','user',['Connected accounts','Add account']]
+];
+const pinned=[['breakcomm','chat'],['Inbox zero plan','circle-check'],['Website Ideas','search'],['Q2 Planning','folder'],['Research Notes','file']];
+const recent=[['Finances Plan','chat'],['Workout Plan','chat'],['Travel Itinerary','chat']];
+const nav=m('mNav');
+function makeNav(){
+ nav.replaceChildren();
+ for(const [label,ico,items] of navEntries){
+   const b=create('button','m-drawer-entry');b.innerHTML=iconMobile(ico)+`<span style="flex:1;text-align:left">${label}</span>`+iconMobile('chevron-down').replace('class="m-icon"','class="m-icon m-chevron"');
+   b.setAttribute('aria-expanded','false');b.setAttribute('aria-label',label+' (expand)');
+   const children=create('div','m-children');
+   for(const item of items){const cb=create('button','',item);cb.addEventListener('click',()=>{if(label==='Chats'&&item==='New chat'){newChat();return;}closeDrawer();notice(`${item} — placeholder`)});children.append(cb)}
+   b.addEventListener('click',()=>{const open=b.getAttribute('aria-expanded')!=='true';b.setAttribute('aria-expanded',String(open));children.classList.toggle('open',open);if(label==='Chats')notice('Chats section '+(open?'expanded':'collapsed'));});
+   nav.append(b,children);
+ }
+}
+function makeList(data,dest){dest.replaceChildren();for(const [title,ico] of data){const btn=create('button','m-drawer-item');btn.innerHTML=iconMobile(ico)+'<span class="m-itemname"></span><span class="m-mini-menu">···</span>';btn.querySelector('.m-itemname').textContent=title;btn.addEventListener('click',()=>{closeDrawer();notice(`${title} — placeholder item`)});dest.append(btn)}}
+function closeDrawer(){root.classList.remove('m-drawer-open');m('mDrawer').setAttribute('aria-hidden','true')}
+function openDrawer(){if(m('mSettings').classList.contains('visible'))return;root.classList.add('m-drawer-open');m('mDrawer').setAttribute('aria-hidden','false')}
+function hideSettings(){m('mSettings').classList.remove('visible');m('mSettingsDetail').classList.remove('visible');}
+function openSettings(){closeDrawer();m('mSettings').classList.add('visible');m('mSettings').scrollTop=0}
+function detail(name){m('mDetailTitle').textContent=name;m('mDetailDesc').textContent=`${name} is a UI placeholder. Victor can connect actual Android settings and data sources later.`;m('mSettingsDetail').classList.add('visible')}
+function newChat(){closeDrawer();hideSettings();m('mOriginalUser').textContent='';m('mOriginalAnswer').textContent='';m('mOriginalUser').parentElement.style.display='none';m('mReplyTools').style.display='none';m('mNewMessages').replaceChildren();m('mInput').focus();notice('New local chat — Victor not connected')}
+function send(){const value=m('mInput').value.trim();if(!value){notice('Voice mode requires Android integration.');return;}const block=create('div','m-local-msg');const bubbleRow=create('div','m-user-row');const bubble=create('div','m-user-bubble',value);bubbleRow.append(bubble);block.append(bubbleRow);block.append(create('p','m-local-note','Preview only — no AI backend connected.'));m('mNewMessages').append(block);m('mInput').value='';updateSend();m('mChatScroll').scrollTop=m('mChatScroll').scrollHeight;}
+function updateSend(){m('mVoice').innerHTML=iconMobile(m('mInput').value.trim()?'arrow-left':'waveform')}
+makeNav();makeList(pinned,m('mPinned'));makeList(recent,m('mRecent'));
+// The real Android host owns system chrome; ?native=1 hides our preview-only simulators.
+const searchParams=new URLSearchParams(window.location.search);
+if(searchParams.has('native') || (/Android/i.test(navigator.userAgent) && !searchParams.has('preview-chrome')))root.classList.add('m-native');
+const fmt=()=>{const d=new Date();m('mClock').textContent=d.toLocaleTimeString('en-US',{'hour':'numeric','minute':'2-digit','hour12':true}).replace(/\s?(AM|PM)/,'');};fmt();setInterval(fmt,60000);
+m('mOpenMenu').addEventListener('click',openDrawer);
+m('mShade').addEventListener('click',closeDrawer);
+m('mSettingsOpen').addEventListener('click',openSettings);
+m('mSettingsBack').addEventListener('click',hideSettings);
+m('mSettingsInfo').addEventListener('click',()=>detail('About Oracyl'));
+m('mDetailBack').addEventListener('click',()=>m('mSettingsDetail').classList.remove('visible'));
+root.querySelectorAll('[data-detail]').forEach(b=>b.addEventListener('click',()=>detail(b.dataset.detail)));
+m('mAccent').addEventListener('click',()=>notice('Accent color: Pink (preview)'));
+m('mLibrary').addEventListener('click',()=>{closeDrawer();detail('Library');m('mSettings').classList.add('visible')});
+m('mSearch').addEventListener('click',()=>{const q=prompt('Search Oracyl (visual preview):');if(q?.trim()){closeDrawer();notice('Search backend not connected')}});
+m('mAddPin').addEventListener('click',()=>{const name=prompt('Pin an item:');if(name?.trim()){pinned.unshift([name.trim(),'chat']);makeList(pinned,m('mPinned'));notice('Pinned '+name.trim())}});
+m('mAddRecent').addEventListener('click',newChat);
+m('mNewChat').addEventListener('click',newChat);
+m('mCreateTop').addEventListener('click',newChat);
+m('mMoreTop').addEventListener('click',()=>notice('Chat actions — preview'));
+m('mInput').addEventListener('input',updateSend);
+m('mInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+m('mVoice').addEventListener('click',send);
+m('mAttach').addEventListener('click',()=>notice('Attachments require Android integration'));
+m('mMic').addEventListener('click',()=>notice('Microphone requires Android integration'));
+m('mCopy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(m('mOriginalAnswer').textContent);notice('Copied')}catch(e){notice('Clipboard not available')}});
+root.querySelectorAll('[data-m-reaction]').forEach(b=>b.addEventListener('click',()=>b.classList.toggle('active')));
+m('mRead').addEventListener('click',()=>{if(!('speechSynthesis' in window))return notice('Speech unavailable');speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(m('mOriginalAnswer').textContent))});
+m('mShare').addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({text:m('mOriginalAnswer').textContent});return;}notice('Share requires Android integration')}catch(e){}});
+m('mMoreReply').addEventListener('click',()=>notice('Message actions — preview'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'||e.key==='Backspace'&&e.target.tagName!=='TEXTAREA'){if(m('mSettingsDetail').classList.contains('visible'))m('mSettingsDetail').classList.remove('visible');else if(m('mSettings').classList.contains('visible'))hideSettings();else closeDrawer();}});
+// All demo data and settings are local; the interface does not contact a backend.
+})();
+</script>
+</body>
+</html>
